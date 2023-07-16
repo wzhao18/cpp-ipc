@@ -292,8 +292,11 @@ struct conn_info_head {
     }
 
     auto& recv_cache() {
-        thread_local ipc::unordered_map<msg_id_t, cache_t> tls;
-        return tls;
+        thread_local ipc::unordered_map<msg_id_t, cache_t> *tls;
+        if (!tls) {
+            tls = new ipc::unordered_map<msg_id_t, cache_t>();
+        }
+        return *tls;
     }
 };
 
